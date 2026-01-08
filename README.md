@@ -26,7 +26,11 @@ AI coding assistants are blind to TUIs. When you're debugging a terminal interfa
 ## Installation
 
 ```bash
+# Install CLI tool
 go install github.com/ali/opencode-canvas/cli@latest
+
+# Install MCP server (for OpenCode integration)
+go install github.com/ali/opencode-canvas/mcp@latest
 ```
 
 Or clone and build:
@@ -35,7 +39,34 @@ Or clone and build:
 git clone https://github.com/ali/opencode-canvas
 cd opencode-canvas
 go build -o opencode-canvas ./cli
+go build -o opencode-canvas-mcp ./mcp
 ```
+
+## OpenCode Integration
+
+Add to your OpenCode config (`.opencode/config.json` or `~/.config/opencode/config.json`):
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "canvas": {
+      "type": "local",
+      "command": ["opencode-canvas-mcp"],
+      "enabled": true
+    }
+  }
+}
+```
+
+This gives your AI assistant these tools:
+- `canvas_list` - List all active canvas TUIs
+- `canvas_state` - Get TUI state as JSON
+- `canvas_view` - Get rendered terminal output
+- `canvas_key` - Send keystrokes
+- `canvas_input` - Send text input
+- `canvas_ping` - Check if TUI is responsive
+- `canvas_close` - Request TUI to close
 
 ## Quick Start
 

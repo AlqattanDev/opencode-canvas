@@ -1,5 +1,6 @@
 # Binaries
 opencode-canvas
+opencode-canvas-mcp
 *.exe
 *.dll
 *.so
