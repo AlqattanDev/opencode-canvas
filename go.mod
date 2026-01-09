@@ -1,4 +1,4 @@
-module github.com/ali/opencode-canvas
+module github.com/AlqattanDev/opencode-canvas
 
 go 1.23.0
 

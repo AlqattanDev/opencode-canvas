@@ -27,16 +27,16 @@ AI coding assistants are blind to TUIs. When you're debugging a terminal interfa
 
 ```bash
 # Install CLI tool
-go install github.com/ali/opencode-canvas/cli@latest
+go install github.com/AlqattanDev/opencode-canvas/cli@latest
 
 # Install MCP server (for OpenCode integration)
-go install github.com/ali/opencode-canvas/mcp@latest
+go install github.com/AlqattanDev/opencode-canvas/mcp@latest
 ```
 
 Or clone and build:
 
 ```bash
-git clone https://github.com/ali/opencode-canvas
+git clone https://github.com/AlqattanDev/opencode-canvas
 cd opencode-canvas
 go build -o opencode-canvas ./cli
 go build -o opencode-canvas-mcp ./mcp
@@ -74,7 +74,7 @@ This gives your AI assistant these tools:
 
 ```go
 import (
-    "github.com/ali/opencode-canvas/canvas"
+    "github.com/AlqattanDev/opencode-canvas/canvas"
     tea "github.com/charmbracelet/bubbletea"
 )
 

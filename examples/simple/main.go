@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ali/opencode-canvas/canvas"
+	"github.com/AlqattanDev/opencode-canvas/canvas"
 )
 
 type testModel struct {

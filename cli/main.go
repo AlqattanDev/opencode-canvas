@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/ali/opencode-canvas/canvas"
+	"github.com/AlqattanDev/opencode-canvas/canvas"
 )
 
 func main() {

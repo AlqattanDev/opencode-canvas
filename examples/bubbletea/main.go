@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ali/opencode-canvas/canvas"
+	"github.com/AlqattanDev/opencode-canvas/canvas"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
