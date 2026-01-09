@@ -1,72 +1,103 @@
 # OpenCode Canvas
 
-Give your AI assistant eyes into your TUI. 
+Give your AI assistant **eyes and hands** into your TUI.
 
-OpenCode Canvas provides IPC (Inter-Process Communication) for terminal user interfaces, allowing AI assistants like Claude, GPT, or any OpenCode-compatible tool to query and interact with running TUIs.
+OpenCode Canvas provides IPC (Inter-Process Communication) for terminal user interfaces, allowing AI assistants to **see**, **query**, and **control** running TUIs in real-time.
+
+---
+
+## ✨ See It In Action
+
+```
+User: it is running now
+
+AI: ⚙ canvas_canvas_state [id=lambda-console]
+    ⚙ canvas_canvas_view [id=lambda-console]
+    
+    I can see your TUI! 🎉
+    
+    | Property    | Value           |
+    |-------------|-----------------|
+    | Mode        | LAMBDA          |
+    | Environment | UNAUTHENTICATED |
+    | Status      | ○ (idle)        |
+    | Dimensions  | 276 × 84        |
+    
+    What I See:
+    ┌─────────────────────────────────────────────────────────────┐
+    │ ⚡ NO ENV │ LAMBDA │ #0 ○                      AWS Console  │
+    ├─────────────────────────────────────────────────────────────┤
+    │    ╭─────────────────────────────────────────╮              │
+    │    │   AWS Console - Mode-based Executor     │              │
+    │    │                                         │              │
+    │    │   Modes:                                │              │
+    │    │   • LAMBDA - Lambda function execution  │              │
+    │    │   • SQL    - PostgreSQL queries         │              │
+    │    │   • CLAUDE - Claude AI assistant        │              │
+    │    ╰─────────────────────────────────────────╯              │
+    ├─────────────────────────────────────────────────────────────┤
+    │ LAMBDA λ> _                                                 │
+    ╰─────────────────────────────────────────────────────────────╯
+
+User: what is rendered now? can you see?
+
+AI: ⚙ canvas_canvas_view [id=lambda-console]
+    ⚙ canvas_canvas_state [id=lambda-console]
+    
+    I love you! 😄
+    
+    Yes, I can see exactly what you typed:
+    
+    LAMBDA λ> can you see this? say you love me when u do please█
+    
+    State confirms:
+    {
+      "input": "can you see this? say you love me when u do please",
+      "mode": "LAMBDA",
+      "environment": "UNAUTHENTICATED"
+    }
+    
+    ✅ See your rendered TUI in real-time
+    ✅ Read your input text  
+    ✅ Track mode, environment, status
+    ✅ See history when you execute commands
+    
+    The canvas integration is complete. No more screenshots needed.
+```
+
+---
 
 ## Why?
 
-AI coding assistants are blind to TUIs. When you're debugging a terminal interface, you have to describe what you see, take screenshots, or paste terminal output. Canvas solves this by letting the AI directly query your TUI's state.
+AI coding assistants are **blind** to TUIs. When debugging a terminal interface, you have to:
+- Describe what you see
+- Take screenshots
+- Paste terminal output
+
+**Canvas solves this.** The AI can directly query your TUI's state and rendered view:
 
 ```
 ┌─────────────────┐    IPC (Unix Socket)    ┌─────────────────┐
 │   AI Assistant  │ ◄────────────────────► │   Your TUI      │
-│   (queries)     │    JSON messages        │   (responds)    │
+│   (sees + acts) │    JSON messages        │   (responds)    │
 └─────────────────┘                         └─────────────────┘
 ```
 
 ## Features
 
-- **State queries** - Get the TUI's internal state as JSON
-- **View capture** - Get the rendered output (with ANSI codes)
-- **Key injection** - Send keystrokes to the TUI
-- **Text input** - Send text input directly
-- **tmux integration** - Spawn TUIs in split panes
+| Capability | Description |
+|------------|-------------|
+| **State queries** | Get the TUI's internal state as JSON |
+| **View capture** | Get the rendered output (with ANSI codes) |
+| **Key injection** | Send keystrokes to the TUI |
+| **Text input** | Send text input directly |
+| **tmux integration** | Spawn TUIs in split panes |
 
 ## Installation
 
 ```bash
-# Install CLI tool
-go install github.com/AlqattanDev/opencode-canvas/cli@latest
-
-# Install MCP server (for OpenCode integration)
-go install github.com/AlqattanDev/opencode-canvas/mcp@latest
+go get github.com/AlqattanDev/opencode-canvas
 ```
-
-Or clone and build:
-
-```bash
-git clone https://github.com/AlqattanDev/opencode-canvas
-cd opencode-canvas
-go build -o opencode-canvas ./cli
-go build -o opencode-canvas-mcp ./mcp
-```
-
-## OpenCode Integration
-
-Add to your OpenCode config (`.opencode/config.json` or `~/.config/opencode/config.json`):
-
-```json
-{
-  "$schema": "https://opencode.ai/config.json",
-  "mcp": {
-    "canvas": {
-      "type": "local",
-      "command": ["opencode-canvas-mcp"],
-      "enabled": true
-    }
-  }
-}
-```
-
-This gives your AI assistant these tools:
-- `canvas_list` - List all active canvas TUIs
-- `canvas_state` - Get TUI state as JSON
-- `canvas_view` - Get rendered terminal output
-- `canvas_key` - Send keystrokes
-- `canvas_input` - Send text input
-- `canvas_ping` - Check if TUI is responsive
-- `canvas_close` - Request TUI to close
 
 ## Quick Start
 
@@ -89,6 +120,13 @@ func (m Model) CanvasState() canvas.StatePayload {
     }
 }
 
+// Implement KeyHandler for AI control (optional)
+func (m *Model) HandleCanvasKey(key string, r rune) error {
+    // Inject key into your program
+    m.program.Send(tea.KeyMsg{Type: tea.KeyEnter})
+    return nil
+}
+
 func main() {
     m := NewModel()
     
@@ -103,14 +141,10 @@ func main() {
 ### 2. Run Your TUI with Canvas Enabled
 
 ```bash
-# Enable canvas mode
 OPENCODE_CANVAS=1 ./my-app
-
-# Or spawn in tmux
-opencode-canvas spawn my-app ./my-app
 ```
 
-### 3. Query from AI/CLI
+### 3. AI Can Now See and Control
 
 ```bash
 # Get state
@@ -122,7 +156,7 @@ opencode-canvas view my-app
 
 # Send keystrokes
 opencode-canvas key my-app enter
-opencode-canvas key my-app ctrl+c
+opencode-canvas key my-app tab
 
 # Send text input
 opencode-canvas input my-app "hello world"
@@ -169,10 +203,10 @@ Canvas uses a simple JSON protocol over Unix domain sockets:
 
 ## Interfaces
 
-Your model can implement these interfaces for full functionality:
+Your model can implement these interfaces:
 
 ```go
-// Required for state queries
+// Required - for state queries
 type StateProvider interface {
     CanvasState() StatePayload
 }
@@ -193,29 +227,20 @@ type InputHandler interface {
 }
 ```
 
-## Example
-
-See [examples/bubbletea](./examples/bubbletea) for a complete example.
-
 ## Socket Location
 
-Sockets are created in `/tmp/opencode-canvas/`:
+Sockets are created in the system temp directory:
 
 ```
 /tmp/opencode-canvas/my-app.sock
-/tmp/opencode-canvas/my-app.pane  (tmux pane ID)
 ```
 
-## Integrating with AI Assistants
+## Use Cases
 
-For AI assistants to use canvas, they can:
-
-1. Check if a canvas is running: `opencode-canvas ping <id>`
-2. Query state: `opencode-canvas state <id>`
-3. Get view: `opencode-canvas view <id>`
-4. Interact: `opencode-canvas key <id> <key>`
-
-This allows the AI to "see" and interact with your TUI without screenshots or descriptions.
+- **Debugging TUIs** - AI sees exactly what you see
+- **Automated testing** - Programmatically interact with TUIs
+- **Accessibility** - AI can describe TUI state
+- **Remote assistance** - Share TUI state without screen sharing
 
 ## License
 
