@@ -47,7 +47,7 @@ func Wrap(canvasID string, model tea.Model) tea.Model {
 		model:  model,
 	}
 
-	server.SetModel(model)
+	server.SetModel(adapter)
 	server.Start()
 
 	return adapter
@@ -60,14 +60,12 @@ func (a *BubbleTeaAdapter) Init() tea.Cmd {
 
 // Update implements tea.Model
 func (a *BubbleTeaAdapter) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	// Check for quit to clean up server
 	if _, ok := msg.(tea.QuitMsg); ok {
 		a.server.Stop()
 	}
 
 	newModel, cmd := a.model.Update(msg)
 	a.model = newModel
-	a.server.SetModel(newModel)
 
 	return a, cmd
 }
